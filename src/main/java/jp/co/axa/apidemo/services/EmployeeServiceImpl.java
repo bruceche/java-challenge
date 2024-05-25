@@ -4,6 +4,10 @@ import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.exception.EmployeeNotFoundException;
 import jp.co.axa.apidemo.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import java.util.List;
  * It provides methods to retrieve, save, update, and delete employees from the employee repository.
  */
 @Service
+@EnableCaching
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
@@ -27,6 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     public List<Employee> retrieveEmployees() {
         List<Employee> employees = employeeRepository.findAll();
+        employees.forEach(employee -> cacheEmployee(employee));
         return employees;
     }
 
@@ -37,6 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return The Employee with the specified employeeId.
      * @throws EmployeeNotFoundException if no Employee is found with the given employeeId.
      */
+    @Cacheable(value = "employee", key = "#employeeId")
     public Employee getEmployee(Long employeeId) {
         return employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee could not be found"));
@@ -59,6 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employeeId The ID of the employee to delete.
      * @return A ResponseEntity object with a success message and HTTP status code 200 (OK).
      */
+    @CacheEvict(value = "employee", key = "#employeeId")
     public ResponseEntity<?> deleteEmployee(Long employeeId) {
         employeeRepository.deleteById(employeeId);
         return new ResponseEntity<>("Employee has been deleted successfully.", HttpStatus.OK);
@@ -70,8 +78,20 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employee The employee to be updated.
      * @return A ResponseEntity object with a success message and HTTP status code 200 (OK).
      */
+    @CacheEvict(value = "employee", key = "#employee.id")
     public ResponseEntity<?> updateEmployee(Employee employee) {
         employeeRepository.save(employee);
         return new ResponseEntity<>("Employee has been updated successfully.", HttpStatus.OK);
+    }
+
+    /**
+     * Caches an employee object in the cache.
+     *
+     * @param employee The employee object to be cached.
+     * @return The cached employee object.
+     */
+    @Cacheable(value = "employee", key = "#employee.id")
+    private Employee cacheEmployee(Employee employee) {
+        return employee;
     }
 }
