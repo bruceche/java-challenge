@@ -52,4 +52,12 @@ public interface EmployeeService {
      * @return A ResponseEntity indicating the status of the operation.
      */
     public ResponseEntity<?> updateEmployee(Employee employee);
+
+    /**
+     * Checks if an employee with the given ID exists in the database.
+     *
+     * @param employeeId The ID of the employee to check for existence.
+     * @return {@code true} if an employee with the given ID exists, {@code false} otherwise.
+     */
+    public boolean existsById(Long employeeId);
 }

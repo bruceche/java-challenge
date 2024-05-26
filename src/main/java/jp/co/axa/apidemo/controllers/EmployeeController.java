@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -40,7 +41,9 @@ public class EmployeeController {
     @GetMapping("/employees")
     public Page<Employee> getEmployees(@RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "10") int size) {
+
         Page<Employee> employees = employeeService.retrieveEmployees(page, size);
+
         return employees;
     }
 
@@ -61,6 +64,7 @@ public class EmployeeController {
 
         // Retrieves an employee by their employee ID.
         Employee emp = employeeService.getEmployee(employeeId);
+
         return new ResponseEntity<>(emp, HttpStatus.OK);
     }
 
@@ -75,6 +79,7 @@ public class EmployeeController {
             notes = "Saves a new employee to the database.")
     @PostMapping("/employees")
     public ResponseEntity<?> saveEmployee(@Valid @RequestBody Employee employee) {
+
         return employeeService.saveEmployee(employee);
     }
 
@@ -92,7 +97,10 @@ public class EmployeeController {
             notes = "Deletes an employee from the database using their Employee ID.")
     @DeleteMapping("/employees/{employeeId}")
     public ResponseEntity<?> deleteEmployee(@PathVariable(name = "employeeId") Long employeeId) {
-        employeeService.getEmployee(employeeId);
+
+        // Exists check
+        checkEmployeeExists(employeeId);
+
         return employeeService.deleteEmployee(employeeId);
     }
 
@@ -112,8 +120,24 @@ public class EmployeeController {
     @PutMapping("/employees/{employeeId}")
     public ResponseEntity<?> updateEmployee(@Valid @RequestBody Employee employee,
                                             @PathVariable(name = "employeeId") Long employeeId) {
-        employeeService.getEmployee(employeeId);
+        // Exists check
+        checkEmployeeExists(employeeId);
+
         employee.setId(employeeId);
         return employeeService.updateEmployee(employee);
+    }
+
+    /**
+     * Checks if an employee with the given employee ID exists in the database.
+     *
+     * @param employeeId The ID of the employee to check for existence.
+     * @return {@code true} if an employee with the given ID exists, {@code false} otherwise.
+     * @throws ResponseStatusException if the employee with the specified ID is not found
+     */
+    private boolean checkEmployeeExists(Long employeeId) {
+        if (!employeeService.existsById(employeeId)) {
+            throw new EmployeeNotFoundException("Employee could not be found");
+        }
+        return true;
     }
 }
