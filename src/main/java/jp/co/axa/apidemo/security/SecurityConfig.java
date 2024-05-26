@@ -62,11 +62,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .regexMatchers(HttpMethod.GET, "/api/v1/employees").hasRole("EMPLOYEE")
-                .regexMatchers(HttpMethod.GET, "/api/v1/employees/.*").hasRole("EMPLOYEE")
-                .regexMatchers(HttpMethod.POST, "/api/v1/employees").hasRole("MANAGER")
-                .regexMatchers(HttpMethod.PUT, "/api/v1/employees/.*").hasRole("MANAGER")
-                .regexMatchers(HttpMethod.DELETE, "/api/v1/employees/.*").hasRole("ADMIN")
+                .regexMatchers(HttpMethod.GET, "/api/v1/employees").hasRole(Role.EMPLOYEE.toString())
+                .regexMatchers(HttpMethod.GET, "/api/v1/employees/.*").hasRole(Role.EMPLOYEE.toString())
+                .regexMatchers(HttpMethod.POST, "/api/v1/employees").hasRole(Role.MANAGER.toString())
+                .regexMatchers(HttpMethod.PUT, "/api/v1/employees/.*").hasRole(Role.ADMIN.toString())
+                .regexMatchers(HttpMethod.DELETE, "/api/v1/employees/.*").hasRole(Role.ADMIN.toString())
                 .antMatchers("/h2-console/.*").permitAll() // Allow all requests to H2 console for development purposes
                 .anyRequest().authenticated()
                 .and()
