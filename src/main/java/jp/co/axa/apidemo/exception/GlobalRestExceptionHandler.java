@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * The GlobalRestExceptionHandler class is a controller advice that handles exceptions thrown within RESTful API endpoints.
@@ -12,9 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 @ControllerAdvice
 public class GlobalRestExceptionHandler {
-
-    @Value("${error.message.notFound}")
-    private String notFoundError;
 
     @Value("${error.message.general}")
     private String generalError;
@@ -25,7 +23,7 @@ public class GlobalRestExceptionHandler {
      * @param ex The EmployeeNotFoundException that was thrown.
      * @return A ResponseEntity containing an EmployeeErrorResponse object with details about the exception.
      */
-    @ExceptionHandler
+    @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<EmployeeErrorResponse> handleException(EmployeeNotFoundException ex) {
 
         // create a EmployeeErrorResponse
@@ -50,10 +48,10 @@ public class GlobalRestExceptionHandler {
         // create a EmployeeErrorResponse
         EmployeeErrorResponse error = new EmployeeErrorResponse();
 
-        error.setStatus(HttpStatus.BAD_REQUEST.value());
-        error.setMessage(ex.getMessage());
+        error.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        error.setMessage(generalError);
         error.setTimeStamp(System.currentTimeMillis());
 
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
