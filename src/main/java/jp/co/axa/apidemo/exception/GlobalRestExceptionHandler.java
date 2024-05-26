@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * The GlobalRestExceptionHandler class is a controller advice that handles exceptions thrown within RESTful API endpoints.
@@ -42,7 +41,7 @@ public class GlobalRestExceptionHandler {
      * @param ex The exception that was thrown.
      * @return A ResponseEntity containing an EmployeeErrorResponse object with details about the exception.
      */
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<EmployeeErrorResponse> handleException(Exception ex) {
 
         // create a EmployeeErrorResponse
