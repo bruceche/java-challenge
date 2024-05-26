@@ -3,6 +3,7 @@ package jp.co.axa.apidemo.controllers;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jp.co.axa.apidemo.entities.Employee;
+import jp.co.axa.apidemo.exception.EmployeeDuplicateException;
 import jp.co.axa.apidemo.exception.EmployeeNotFoundException;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,10 @@ public class EmployeeController {
             notes = "Saves a new employee to the database.")
     @PostMapping("/employees")
     public ResponseEntity<?> saveEmployee(@Valid @RequestBody Employee employee) {
+
+        if (employee.getId() != null && checkEmployeeExists(employee.getId())) {
+            throw new EmployeeDuplicateException("Employee with this ID already exists.");
+        }
 
         return employeeService.saveEmployee(employee);
     }

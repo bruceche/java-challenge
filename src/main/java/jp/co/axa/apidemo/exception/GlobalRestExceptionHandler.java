@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
- * The GlobalRestExceptionHandler class is a controller advice that handles exceptions thrown within RESTful API endpoints.
- * It provides a method to handle the EmployeeNotFoundException and return a ResponseEntity with an EmployeeErrorResponse object.
+ * The GlobalRestExceptionHandler class provides global exception handling for REST endpoints.
  */
 @ControllerAdvice
 public class GlobalRestExceptionHandler {
@@ -33,6 +32,25 @@ public class GlobalRestExceptionHandler {
         error.setTimeStamp(System.currentTimeMillis());
 
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * This method handles the EmployeeDuplicateException and returns a ResponseEntity containing an EmployeeErrorResponse object.
+     *
+     * @param ex The EmployeeDuplicateException that was thrown.
+     * @return A ResponseEntity containing an EmployeeErrorResponse object with details about the exception.
+     */
+    @ExceptionHandler(EmployeeDuplicateException.class)
+    public ResponseEntity<EmployeeErrorResponse> handleException(EmployeeDuplicateException ex) {
+
+        // create a EmployeeErrorResponse
+        EmployeeErrorResponse error = new EmployeeErrorResponse();
+
+        error.setStatus(HttpStatus.CONFLICT.value());
+        error.setMessage(ex.getMessage());
+        error.setTimeStamp(System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     /**
