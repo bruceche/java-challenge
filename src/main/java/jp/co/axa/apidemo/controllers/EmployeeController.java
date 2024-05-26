@@ -4,13 +4,10 @@ import jp.co.axa.apidemo.entities.Employee;
 import jp.co.axa.apidemo.exception.EmployeeNotFoundException;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -26,15 +23,6 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
-
-    @Value("${error.message.notFound}")
-    private String notFoundError;
-
-    @Value("${error.message.database}")
-    private String databaseError;
-
-    @Value("${error.message.general}")
-    private String generalError;
 
     /**
      * Retrieves a list of all employees.
@@ -108,69 +96,5 @@ public class EmployeeController {
         employeeService.getEmployee(employeeId);
         employee.setId(employeeId);
         return employeeService.updateEmployee(employee);
-    }
-
-    /**
-     * This method handles the MethodArgumentNotValidException,
-     * which is thrown when the validation of method arguments fails.
-     * It returns the default error message associated with the first invalid field.
-     *
-     * @param ex the MethodArgumentNotValidException to be handled
-     * @return the default error message of the first invalid field
-     */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldError().getDefaultMessage();
-    }
-
-    /**
-     * This method handles the MethodArgumentTypeMismatchException, which is thrown when
-     * a method argument type does not match the expected type.
-     *
-     * @param ex the MethodArgumentTypeMismatchException to be handled
-     * @return the error message associated with the exception
-     */
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        return ex.getMessage();
-    }
-
-    /**
-     * This method handles the EmployeeNotFoundException, which is thrown when an employee is not found.
-     *
-     * @param ex the EmployeeNotFoundException to be handled
-     * @return the error message indicating that the employee was not found
-     */
-    @ExceptionHandler(EmployeeNotFoundException.class)
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public String handleEmployeeNotFoundException(EmployeeNotFoundException ex) {
-        return notFoundError;
-    }
-
-    /**
-     * This method handles a DataAccessException and returns a string representing a database error.
-     *
-     * @param ex the DataAccessException to be handled
-     * @return a string representing the database error
-     */
-    @ExceptionHandler(DataAccessException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String handleDataAccessException(DataAccessException ex) {
-        return databaseError;
-    }
-
-    /**
-     * This method handles the generic exception thrown within the EmployeeController class.
-     * It returns a string representation of the error message associated with the exception.
-     *
-     * @param ex the exception to be handled
-     * @return a string representation of the error message
-     */
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String handleException(Exception ex) {
-        return generalError + ex.getMessage();
     }
 }
