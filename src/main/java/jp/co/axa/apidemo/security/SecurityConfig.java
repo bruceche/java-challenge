@@ -110,10 +110,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .regexMatchers(HttpMethod.POST, "/api/v1/employees").hasRole("MANAGER")
                 .regexMatchers(HttpMethod.PUT, "/api/v1/employees/.*").hasRole("MANAGER")
                 .regexMatchers(HttpMethod.DELETE, "/api/v1/employees/.*").hasRole("ADMIN")
+                .antMatchers("/h2-console/.*").permitAll() // Allow all requests to H2 console for development purposes
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+                .headers().frameOptions().disable(); // Add this line to disable X-Frame-Options for development purposes
     }
 }
