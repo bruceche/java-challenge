@@ -1,5 +1,6 @@
-package jp.co.axa.apidemo.security;
+package jp.co.axa.apidemo.config;
 
+import jp.co.axa.apidemo.security.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
