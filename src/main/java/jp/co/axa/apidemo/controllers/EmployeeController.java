@@ -5,6 +5,7 @@ import jp.co.axa.apidemo.exception.EmployeeNotFoundException;
 import jp.co.axa.apidemo.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +26,16 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     /**
-     * Retrieves a list of all employees.
+     * Retrieves a page of employees.
      *
-     * @return a List of Employee objects representing the employees
+     * @param page The number of the page to retrieve. The default value is 0 if not provided.
+     * @param size The number of employees to retrieve per page. The default value is 10 if not provided.
+     * @return A Page object containing the employees for the specified page.
      */
     @GetMapping("/employees")
-    public List<Employee> getEmployees() {
-        List<Employee> employees = employeeService.retrieveEmployees();
+    public Page<Employee> getEmployees(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size) {
+        Page<Employee> employees = employeeService.retrieveEmployees(page, size);
         return employees;
     }
 

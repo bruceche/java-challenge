@@ -1,6 +1,7 @@
 package jp.co.axa.apidemo.services;
 
 import jp.co.axa.apidemo.entities.Employee;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -12,11 +13,13 @@ import java.util.List;
 public interface EmployeeService {
 
     /**
-     * Retrieve all employees from the database.
+     * Retrieves a page of employees.
      *
-     * @return A list of Employee objects.
+     * @param page The number of the page to retrieve.
+     * @param size The number of employees to retrieve per page.
+     * @return A Page object containing the employees for the specified page.
      */
-    public List<Employee> retrieveEmployees();
+    public Page<Employee> retrieveEmployees(int page, int size);
 
     /**
      * Retrieve a single employee using its ID.

@@ -8,10 +8,14 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,12 +30,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 
     /**
-     * Retrieve all Employee entities from the database.
+     * Retrieves a page of employees from the database.
      *
-     * @return A List of Employee entities. If no employees exist in the database, it returns an empty list.
+     * @param page The page number to retrieve. Must be greater than or equal to 0.
+     * @param size The number of employees per page. Must be greater than 0.
+     * @return A Page of Employee objects.
      */
-    public List<Employee> retrieveEmployees() {
-        List<Employee> employees = employeeRepository.findAll();
+    public Page<Employee> retrieveEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Employee> employees = employeeRepository.findAll(pageable);
         employees.forEach(employee -> cacheEmployee(employee));
         return employees;
     }
