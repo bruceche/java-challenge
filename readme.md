@@ -56,6 +56,10 @@ Thank you for considering my application?I look forward to the opportunity to wo
   - Reauthentication of users when changing passwords is not performed during tests with Podman.
   - APIs can be called without authentication when tested with Swagger-UI.
 
+- Improving the performance of full table employee searches:
+  - Add functionality to search based on criteria (such as fuzzy name search, department, salary range, etc.).
+  - Add indexes.
+
 - Add logging functionality and incorporate appropriate logging handling within the program.
 
 - Configure environment variable files to set different environment parameters for various environments.
