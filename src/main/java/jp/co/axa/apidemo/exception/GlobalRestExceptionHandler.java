@@ -24,6 +24,9 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<EmployeeErrorResponse> handleException(EmployeeNotFoundException ex) {
 
+        // Print stack trace to console
+        ex.printStackTrace();
+
         // create a EmployeeErrorResponse
         EmployeeErrorResponse error = new EmployeeErrorResponse();
 
@@ -43,6 +46,9 @@ public class GlobalRestExceptionHandler {
     @ExceptionHandler(EmployeeDuplicateException.class)
     public ResponseEntity<EmployeeErrorResponse> handleException(EmployeeDuplicateException ex) {
 
+        // Print stack trace to console
+        ex.printStackTrace();
+
         // create a EmployeeErrorResponse
         EmployeeErrorResponse error = new EmployeeErrorResponse();
 
@@ -61,6 +67,9 @@ public class GlobalRestExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<EmployeeErrorResponse> handleException(Exception ex) {
+
+        // Print stack trace to console
+        ex.printStackTrace();
 
         // create a EmployeeErrorResponse
         EmployeeErrorResponse error = new EmployeeErrorResponse();
